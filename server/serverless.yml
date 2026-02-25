@@ -1,0 +1,24 @@
+org: amidown
+app: amidown
+service: website-status-checker
+
+provider:
+  name: aws
+  runtime: python3.12
+  region: eu-central-1 
+  httpApi:
+    cors:
+      allowedOrigins:
+        - http://localhost:3000
+      allowedMethods:
+        - GET
+      allowedHeaders:
+        - Content-Type 
+
+functions:
+  checkStatus:
+    handler: handler.lambda_handler
+    events:
+      - httpApi:
+          path: /check
+          method: GET
