@@ -30,6 +30,10 @@ async def check_url(url: str = None):
             # (many servers/CDNs reject HEAD requests)
             try:
                 response = await client.head(url, headers=stealth_headers, timeout=5, follow_redirects=True)
+                # Some servers reject HEAD with 405 — fall back to GET
+                if response.status_code in (403, 405):
+                    response = await client.get(url, headers=stealth_headers, timeout=5, follow_redirects=True)
+
             except (httpx.ConnectError, httpx.RemoteProtocolError):
                 response = await client.get(url, headers=stealth_headers, timeout=5, follow_redirects=True)
 
@@ -37,7 +41,7 @@ async def check_url(url: str = None):
         latency = round((end_time - start_time) * 1000)  # milliseconds
 
         if response.status_code < 400:
-            # SUCCESS: 200-399 Status Codes
+            # SUCCESS: 1xx-3xx Status Codes
             return {
                 "url": url,
                 "is_up": True,
@@ -45,8 +49,20 @@ async def check_url(url: str = None):
                 "latency_ms": latency,
                 "region": "Europe (Frankfurt)",
             }
+        elif response.status_code < 500:
+            # UP WITH WARNING: 4xx Status Codes
+            # Server is responding, but may be blocking automated requests
+            # (e.g. Cloudflare 403) or returning client errors.
+            return {
+                "url": url,
+                "is_up": True,
+                "status_code": response.status_code,
+                "latency_ms": latency,
+                "warning": f"Server responded with {response.status_code} ({response.reason_phrase}). Site is reachable but returned a client-side error.",
+                "region": "Europe (Frankfurt)",
+            }
         else:
-            # FAILURE (Server responded): 400-599 Status Codes
+            # FAILURE (Server error): 500-599 Status Codes
             return {
                 "url": url,
                 "is_up": False,
