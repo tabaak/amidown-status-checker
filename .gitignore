@@ -60,6 +60,10 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+python_modules/
+
+# Node modules
+node_modules/
 
 # Serverless Framework temporary files
 .serverless/

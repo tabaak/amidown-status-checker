@@ -3,6 +3,7 @@ import urllib.error
 import json
 import time
 
+
 def lambda_handler(event, context):
     # 1. Safely get the URL from the user's request
     query_params = event.get('queryStringParameters') or {}
