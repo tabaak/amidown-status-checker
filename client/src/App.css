@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0a0a0f;
+    color: #e0e0e8;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 560px;
+    padding: 2rem;
+}
+
+/* ---- Title ---- */
+.title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+    margin-bottom: 0.25rem;
+    background: linear-gradient(135deg, #a78bfa, #818cf8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #6b6b80;
+    margin-bottom: 2.5rem;
+}
+
+/* ---- Search bar ---- */
+.search-bar {
+    display: flex;
+    width: 120%;
+    background: #14141e;
+    border: 1px solid #1e1e2e;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.search-bar:focus-within {
+    border-color: #818cf8;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e0e0e8;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.search-bar input::placeholder {
+    color: #3c3c50;
+}
+
+.search-bar button {
+    padding: 1rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: #818cf8;
+    font-size: 1rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.search-bar button:hover {
+    background: rgba(129, 140, 248, 0.08);
+    color: #a5b4fc;
+}
+
+.search-bar button:disabled {
+    color: #3c3c50;
+    cursor: not-allowed;
+}
+
+/* ---- Result card ---- */
+.result-card {
+    width: 100%;
+    margin-top: 2rem;
+    background: #14141e;
+    border: 1px solid #1e1e2e;
+    border-radius: 14px;
+    padding: 1.5rem 1.75rem;
+    animation: fadeUp 0.35s ease;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.status-dot.up {
+    background: #34d399;
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+}
+
+.status-dot.down {
+    background: #f87171;
+    box-shadow: 0 0 8px rgba(248, 113, 113, 0.5);
+}
+
+.result-url {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #c4c4d4;
+    word-break: break-all;
+}
+
+.result-status {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.result-status.up {
+    color: #34d399;
+}
+
+.result-status.down {
+    color: #f87171;
+}
+
+.result-warning {
+    font-size: 0.85rem;
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.2);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.result-details {
+    display: flex;
+    gap: 2rem;
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.detail-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #4a4a60;
+}
+
+.detail-value {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #b0b0c4;
+}
+
+/* ---- Error message ---- */
+.error-msg {
+    margin-top: 1.5rem;
+    color: #f87171;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* ---- Loading spinner ---- */
+.loader {
+    margin-top: 2rem;
+    width: 28px;
+    height: 28px;
+    border: 3px solid #1e1e2e;
+    border-top-color: #818cf8;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
