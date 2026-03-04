@@ -40,63 +40,52 @@ async def check_url(url: str = None):
         end_time = time.time()
         latency = round((end_time - start_time) * 1000)  # milliseconds
 
+        status: dict = {
+            "url": url,
+            "region": "Europe (Frankfurt)",
+        }
+
         if response.status_code < 400:
             # SUCCESS: 1xx-3xx Status Codes
-            return {
-                "url": url,
-                "is_up": True,
+            status.update({"is_up": True,
                 "status_code": response.status_code,
-                "latency_ms": latency,
-                "region": "Europe (Frankfurt)",
-            }
+                "latency_ms": latency,})
         elif response.status_code < 500:
             # UP WITH WARNING: 4xx Status Codes
             # Server is responding, but may be blocking automated requests
             # (e.g. Cloudflare 403) or returning client errors.
-            return {
-                "url": url,
-                "is_up": True,
+            status.update({"is_up": True,
                 "status_code": response.status_code,
                 "latency_ms": latency,
-                "warning": f"Server responded with {response.status_code} ({response.reason_phrase}). Site is reachable but returned a client-side error.",
-                "region": "Europe (Frankfurt)",
-            }
+                "warning": f"Server responded with {response.status_code} ({response.reason_phrase}). Site is reachable but returned a client-side error.",})
         else:
             # FAILURE (Server error): 500-599 Status Codes
-            return {
-                "url": url,
-                "is_up": False,
+            status.update({"is_up": False,
                 "status_code": response.status_code,
-                "error": response.reason_phrase,
-                "region": "Europe (Frankfurt)",
-            }
+                "error": response.reason_phrase,})
 
     except httpx.TimeoutException:
         # FAILURE: Request timed out
-        return {
-            "url": url,
+        status.update({
             "is_up": False,
             "status_code": None,
             "error": "Connection timed out",
-            "region": "Europe (Frankfurt)",
-        }
+        })
 
     except (httpx.ConnectError, httpx.RemoteProtocolError) as e:
         # FAILURE: Could not connect (invalid domain, server offline, etc.)
-        return {
-            "url": url,
+        status.update({
             "is_up": False,
             "status_code": None,
             "error": str(e),
-            "region": "Europe (Frankfurt)",
-        }
+        })
 
     except Exception as e:
         # FALLBACK: Catches any unexpected errors
-        return {
-            "url": url,
+        status.update({
             "is_up": False,
             "status_code": None,
             "error": str(e),
-            "region": "Europe (Frankfurt)",
-        }
+        })
+
+    return status
