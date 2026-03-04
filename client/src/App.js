@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import './App.css';
 
-const API_URL = 'https://uc5501ey95.execute-api.eu-central-1.amazonaws.com/check';
+// const API_URL = 'https://uc5501ey95.execute-api.eu-central-1.amazonaws.com/check';
+const API_URL = {
+  frankfurt: 'https://uc5501ey95.execute-api.eu-central-1.amazonaws.com/check',
+  singapore: 'https://mdkwtrg4x6.execute-api.ap-southeast-1.amazonaws.com/check',
+  virginia: 'https://7b1pmhdqh2.execute-api.us-east-1.amazonaws.com/check',
+}
 
 function App() {
   const [url, setUrl] = useState('');
-  const [result, setResult] = useState(null);
+  const [results, setResults] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -14,17 +19,36 @@ function App() {
     if (!url.trim()) return;
 
     setLoading(true);
-    setResult(null);
+    setResults({});
     setError(null);
 
     try {
-      const res = await fetch(`${API_URL}?url=${encodeURIComponent(url.trim())}`);
-      const data = await res.json();
+      const entries = Object.entries(API_URL);
+      const responses = await Promise.allSettled(
+        entries.map(([, endpoint]) =>
+          fetch(`${endpoint}?url=${encodeURIComponent(url.trim())}`).then((r) => r.json())
+        )
+      );
 
-      if (data.error && !data.status_code) {
-        setError(data.error);
+      const newResults = {};
+      let allErrored = true;
+
+      entries.forEach(([region], i) => {
+        const res = responses[i];
+        if (res.status === 'fulfilled') {
+          newResults[region] = res.value;
+          if (!(res.value.error && !res.value.status_code)) {
+            allErrored = false;
+          }
+        } else {
+          newResults[region] = { error: 'Could not reach this region.' };
+        }
+      });
+
+      if (allErrored && Object.values(newResults).every((r) => r.error && !r.status_code)) {
+        setError(Object.values(newResults)[0].error);
       } else {
-        setResult(data);
+        setResults(newResults);
       }
     } catch (err) {
       setError('Could not reach the server. Please try again.');
@@ -56,44 +80,49 @@ function App() {
 
       {error && <p className="error-msg">{error}</p>}
 
-      {result && (
-        <div className="result-card">
-          <div className="result-header">
-            <span className={`status-dot ${result.is_up ? 'up' : 'down'}`} />
-            <span className="result-url">{result.url}</span>
-          </div>
-          <div className={`result-status ${result.is_up ? 'up' : 'down'}`}>
-            {result.is_up ? 'It\'s up!' : 'It\'s down.'}
-          </div>
-          {result.warning && (
-            <div className="result-warning">⚠️ {result.warning}</div>
-          )}
-          <div className="result-details">
-            {result.status_code && (
-              <div className="detail">
-                <span className="detail-label">Status</span>
-                <span className="detail-value">{result.status_code}</span>
+      {Object.keys(results).length > 0 && (
+        <div className="results-row">
+          {Object.entries(results).map(([region, result]) => (
+            <div className="result-card" key={region}>
+              <div className="result-header">
+                <span className={`status-dot ${result.is_up ? 'up' : 'down'}`} />
+                <span className="result-url">{result.url}</span>
+                <span className="result-region-badge">{region}</span>
               </div>
-            )}
-            {result.latency_ms != null && (
-              <div className="detail">
-                <span className="detail-label">Latency</span>
-                <span className="detail-value">{result.latency_ms} ms</span>
+              <div className={`result-status ${result.is_up ? 'up' : 'down'}`}>
+                {result.is_up ? "It's up!" : "It's down."}
               </div>
-            )}
-            {result.region && (
-              <div className="detail">
-                <span className="detail-label">Region</span>
-                <span className="detail-value">{result.region}</span>
+              {result.warning && (
+                <div className="result-warning">⚠️ {result.warning}</div>
+              )}
+              <div className="result-details">
+                {result.status_code && (
+                  <div className="detail">
+                    <span className="detail-label">Status</span>
+                    <span className="detail-value">{result.status_code}</span>
+                  </div>
+                )}
+                {result.latency_ms != null && (
+                  <div className="detail">
+                    <span className="detail-label">Latency</span>
+                    <span className="detail-value">{result.latency_ms} ms</span>
+                  </div>
+                )}
+                {result.region && (
+                  <div className="detail">
+                    <span className="detail-label">Region</span>
+                    <span className="detail-value">{result.region}</span>
+                  </div>
+                )}
+                {result.error && (
+                  <div className="detail">
+                    <span className="detail-label">Error</span>
+                    <span className="detail-value">{result.error}</span>
+                  </div>
+                )}
               </div>
-            )}
-            {result.error && (
-              <div className="detail">
-                <span className="detail-label">Error</span>
-                <span className="detail-value">{result.error}</span>
-              </div>
-            )}
-          </div>
+            </div>
+          ))}
         </div>
       )}
     </div>

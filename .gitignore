@@ -60,7 +60,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-python_modules/
+python/
 
 # Node modules
 node_modules/

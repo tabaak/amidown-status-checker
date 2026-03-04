@@ -38,7 +38,7 @@ async def check_url(url: str = None):
                 response = await client.get(url, headers=stealth_headers, timeout=5, follow_redirects=True)
 
         end_time = time.time()
-        latency = round((end_time - start_time) * 1000)  # milliseconds
+        latency = round((end_time - start_time) * 1000)
 
         status: dict = {
             "url": url,
@@ -47,22 +47,30 @@ async def check_url(url: str = None):
 
         if response.status_code < 400:
             # SUCCESS: 1xx-3xx Status Codes
-            status.update({"is_up": True,
+            status.update({
+                "is_up": True,
                 "status_code": response.status_code,
-                "latency_ms": latency,})
+                "latency_ms": latency,
+                })
+
         elif response.status_code < 500:
             # UP WITH WARNING: 4xx Status Codes
             # Server is responding, but may be blocking automated requests
             # (e.g. Cloudflare 403) or returning client errors.
-            status.update({"is_up": True,
+            status.update({
+                "is_up": True,
                 "status_code": response.status_code,
                 "latency_ms": latency,
-                "warning": f"Server responded with {response.status_code} ({response.reason_phrase}). Site is reachable but returned a client-side error.",})
+                "warning": f"Server responded with {response.status_code} ({response.reason_phrase}). Site is reachable but returned a client-side error.",
+                })
+
         else:
             # FAILURE (Server error): 500-599 Status Codes
-            status.update({"is_up": False,
+            status.update({
+                "is_up": False,
                 "status_code": response.status_code,
-                "error": response.reason_phrase,})
+                "error": response.reason_phrase,
+                })
 
     except httpx.TimeoutException:
         # FAILURE: Request timed out
