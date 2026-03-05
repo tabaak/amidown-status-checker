@@ -273,3 +273,42 @@ body {
         transform: rotate(360deg);
     }
 }
+
+/* ---- Mobile ---- */
+@media (max-width: 640px) {
+    .app {
+        padding: 1.5rem 1rem;
+    }
+
+    .title {
+        font-size: 1.8rem;
+    }
+
+    .subtitle {
+        font-size: 0.85rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .search-bar {
+        width: 100%;
+        border-radius: 10px;
+    }
+
+    .search-bar input {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .search-bar button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .results-row {
+        flex-direction: column;
+    }
+
+    .result-status {
+        font-size: 1.15rem;
+    }
+}
