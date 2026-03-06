@@ -1,11 +1,10 @@
 import { useState } from 'react';
 import './App.css';
 
-// const API_URL = 'https://uc5501ey95.execute-api.eu-central-1.amazonaws.com/check';
 const API_URL = {
-  frankfurt: 'https://uc5501ey95.execute-api.eu-central-1.amazonaws.com/check',
-  singapore: 'https://mdkwtrg4x6.execute-api.ap-southeast-1.amazonaws.com/check',
-  virginia: 'https://7b1pmhdqh2.execute-api.us-east-1.amazonaws.com/check',
+  frankfurt: 'https://tyfrfcxfp5.execute-api.eu-central-1.amazonaws.com/prod/check',
+  singapore: 'https://3643dmk2aj.execute-api.ap-southeast-1.amazonaws.com/prod/check',
+  virginia: 'https://qqir65hwzl.execute-api.us-east-1.amazonaws.com/prod/check',
 }
 
 function App() {
