@@ -1,10 +1,19 @@
 import httpx
 import time
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
 
 app = FastAPI()
 handler = Mangum(app)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://vokh.dev", "https://www.vokh.dev"], # Your exception list
+    allow_credentials=True,
+    allow_methods=["GET"],
+    allow_headers=["Content-Type", "x-api-key"],
+)
 
 
 @app.get("/check")

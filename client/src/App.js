@@ -1,10 +1,20 @@
 import { useState } from 'react';
 import './App.css';
 
-const API_URL = {
-  frankfurt: 'https://tyfrfcxfp5.execute-api.eu-central-1.amazonaws.com/prod/check',
-  singapore: 'https://3643dmk2aj.execute-api.ap-southeast-1.amazonaws.com/prod/check',
-  virginia: 'https://qqir65hwzl.execute-api.us-east-1.amazonaws.com/prod/check',
+
+const API_CONFIG = {
+  frankfurt: {
+    endpoint: 'https://tyfrfcxfp5.execute-api.eu-central-1.amazonaws.com/prod/check',
+    apiKey: process.env.REACT_APP_FRANKFURT_API_KEY
+  },
+  singapore: {
+    endpoint: 'https://3643dmk2aj.execute-api.ap-southeast-1.amazonaws.com/prod/check',
+    apiKey: process.env.REACT_APP_SINGAPORE_API_KEY
+  },
+  virginia: {
+    endpoint: 'https://qqir65hwzl.execute-api.us-east-1.amazonaws.com/prod/check',
+    apiKey: process.env.REACT_APP_VIRGINIA_API_KEY
+  }
 }
 
 function App() {
@@ -22,10 +32,14 @@ function App() {
     setError(null);
 
     try {
-      const entries = Object.entries(API_URL);
+      const entries = Object.entries(API_CONFIG);
       const responses = await Promise.allSettled(
-        entries.map(([, endpoint]) =>
-          fetch(`${endpoint}?url=${encodeURIComponent(url.trim())}`).then((r) => r.json())
+        entries.map(([, config]) =>
+          fetch(`${config.endpoint}?url=${encodeURIComponent(url.trim())}`, {
+            headers: {
+              'x-api-key': config.apiKey
+            }
+          }).then((r) => r.json())
         )
       );
 
