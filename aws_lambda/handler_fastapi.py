@@ -1,19 +1,24 @@
 import httpx
 import time
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from mangum import Mangum
+from config import ALLOWED_ORIGINS, REGION_NAMES
 
 app = FastAPI()
 handler = Mangum(app)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://vokh.dev", "https://www.vokh.dev"], # Your exception list
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["Content-Type", "x-api-key"],
 )
+
+aws_region = os.getenv("AWS_REGION", "Local")
+display_region = REGION_NAMES.get(aws_region, aws_region)
 
 
 @app.get("/check")
