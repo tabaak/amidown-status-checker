@@ -56,7 +56,7 @@ async def check_url(url: str = None):
 
         status: dict = {
             "url": url,
-            "region": "Europe (Frankfurt)",
+            "region": display_region,
         }
 
         if response.status_code < 400:
