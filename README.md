@@ -5,7 +5,7 @@ AmIDown is a modern, lightweight, and stealthy website monitoring tool. It allow
 
 **🌐 Live Demo:** [amidown.vokh.dev](https://amidown.vokh.dev)
 
-![AmIDown Preview](https://vokh.dev/logo.png)
+![AmIDown Preview](https://amidown.vokh.dev/logo.png)
 
 ## ✨ Features
 
@@ -67,7 +67,42 @@ REACT_APP_VIRGINIA_API_KEY=your_key_here
 DOMAINS=http://localhost:3000,https://yourdomain.com
 ```
 
-## ☁️ Deployment (AWS Lambda)
+## 📁 Project Structure
+
+```
+aws_lambda/        # FastAPI backend deployed to AWS Lambda
+client/
+  public/          # Source template for index.html: NOT deployable on its own
+  src/             # React source code
+  build/           # Production output from `npm run build` (git-ignored): this is what gets deployed
+python/            # Lambda dependencies installed for Linux (git-ignored)
+```
+
+> [!WARNING]
+> `client/public/index.html` is a **template**. It contains `%PUBLIC_URL%` placeholders and no `<script>` tags. The build step fills these in and links the bundled JS and CSS. Uploading it directly serves a blank page. Always deploy the contents of `client/build/`.
+
+## ☁️ Deployment (Frontend: S3 + CloudFront)
+
+1. **Build the production bundle**:
+   ```bash
+   cd client
+   npm run build
+   ```
+2. **Upload the contents of `client/build/`** (not the folder itself, and never `client/public/`) to the root of the S3 bucket behind the site:
+   - `index.html`, `asset-manifest.json`, `logo.png`
+   - the whole `static/` folder
+
+   With the AWS CLI:
+   ```bash
+   aws s3 sync build/ s3://<your-bucket>/
+   ```
+   Before uploading, make sure the bucket is the one the CloudFront distribution reads from: **CloudFront → Distribution → Origins → Origin domain**. The origin *name* can differ from the bucket name.
+3. **Invalidate the CloudFront cache** so the new `index.html` is served:
+   ```bash
+   aws cloudfront create-invalidation --distribution-id <your-distribution-id> --paths "/*"
+   ```
+
+## ☁️ Deployment (Backend: AWS Lambda)
 
 To deploy the backend, you need to package the dependencies:
 
