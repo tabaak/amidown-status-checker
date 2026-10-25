@@ -1,11 +1,31 @@
-# AmIDown 🕵️‍♂️
-**Stealth Website Status Monitor**
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/amidown-logo-dark.svg">
+    <img src="docs/brand/amidown-logo.svg" alt="AmIDown" height="72">
+  </picture>
+</p>
+
+<p align="center">
+  <b>Is it down, or is it just you?</b><br>
+  Check whether a website is reachable from three AWS regions at once, with browser-like requests that get past simple bot filters.
+</p>
+
+<p align="center">
+  <a href="https://amidown.vokh.dev"><img alt="Live: amidown.vokh.dev" src="https://img.shields.io/badge/live-amidown.vokh.dev-4F46E5?style=for-the-badge"></a>
+  <a href="#-features"><img alt="Regions: Frankfurt, Singapore, N. Virginia" src="https://img.shields.io/badge/regions-FRA%20%C2%B7%20SIN%20%C2%B7%20IAD-1E1E2E?style=for-the-badge"></a>
+</p>
+
+<p align="center">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white">
+  <img alt="FastAPI" src="https://img.shields.io/badge/FastAPI-009688?logo=fastapi&logoColor=white">
+  <img alt="HTTPX" src="https://img.shields.io/badge/HTTPX-async-3C3C50">
+  <img alt="Mangum" src="https://img.shields.io/badge/Mangum-ASGI%20on%20Lambda-4B4C85">
+  <img alt="AWS Lambda" src="https://img.shields.io/badge/AWS%20Lambda-FF9900?logo=awslambda&logoColor=white">
+  <img alt="React 19" src="https://img.shields.io/badge/React-19-20232A?logo=react&logoColor=61DAFB">
+  <img alt="JavaScript" src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black">
+</p>
 
 AmIDown is a modern, lightweight, and stealthy website monitoring tool. It allows you to check if a website is reachable from multiple regions while mimicking real browser behavior to bypass simple bot protection and CDN filters (like Cloudflare).
-
-**🌐 Live Demo:** [amidown.vokh.dev](https://amidown.vokh.dev)
-
-![AmIDown Preview](https://amidown.vokh.dev/logo.png)
 
 ## ✨ Features
 
